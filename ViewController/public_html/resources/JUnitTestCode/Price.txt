@@ -1,0 +1,17 @@
+package jUnitTest;
+
+public abstract class Price {
+
+	public static final int REGULAR = 0;
+	public static final int NEW_RELEASE = 1;
+	public static final int CHILDRENS = 2;
+
+	public abstract double getCharge(Rental rental);
+	
+	public static Price setPriceType(int priceType){
+		if (priceType == REGULAR) return new RegularPrice();
+		else if (priceType == NEW_RELEASE) return new NewReleasePrice();
+		else if (priceType == CHILDRENS) return new ChildrensPrice();
+		return null;
+	}
+}

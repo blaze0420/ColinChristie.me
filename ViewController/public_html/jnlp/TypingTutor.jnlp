@@ -1,0 +1,17 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<jnlp spec="1.0+" codebase="http://www.colinchristie.me/jnlp/TypingTutor.jnlp" href="">
+   <information>
+      <title>Typing Tutor</title>
+      <vendor>CsC</vendor>
+      <description>A program to test your typing skills</description>
+      <offline-allowed/>
+   </information>
+   <security>
+      <all-permissions/>
+   </security>
+   <resources>
+      <j2se version="1.4+"/>
+      <jar href="/apps/TypingTutor.jar" main="true" download="eager"/>
+   </resources>
+   <application-desc main-class="keyboardTutor.KeyTutorMain"/>
+</jnlp>
