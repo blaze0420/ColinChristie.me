@@ -1,9 +1,0 @@
-package jUnitTest;
-
-public class NewReleasePrice extends Price {
-
-	public double getCharge(Rental rental) {
-		return rental.getDaysRented() * 3;
-	}
-
-}
