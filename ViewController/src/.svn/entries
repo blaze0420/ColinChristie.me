@@ -1,0 +1,31 @@
+10
+
+dir
+270
+svn+ssh://colin@192.168.1.3/home/colin/.myrepo/ColinChristieMe/ViewController/src
+svn+ssh://colin@192.168.1.3/home/colin/.myrepo
+
+
+
+2012-11-14T07:20:38.716175Z
+122
+colin
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+95d57b24-a32a-4ceb-a7ec-1c4f45fc6d51
+
+META-INF
+dir
+
