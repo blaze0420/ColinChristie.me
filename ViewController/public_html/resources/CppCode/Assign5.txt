@@ -1,0 +1,193 @@
+#include <cmath>
+#include <algorithm>
+#include <memory>
+#include <array>
+#include <stdexcept>
+#include <ostream>
+#include <initializer_list>
+
+//===========================================================================
+
+class Object
+{
+	public:
+	  virtual ~Object() = default;
+
+	  virtual std::unique_ptr<Object> clone() = 0;
+		
+	protected:
+	  template <typename T>
+	  static std::unique_ptr<Object> clone_default_impl(T& self)
+	  {
+	    return std::unique_ptr<Object>(new T(self));
+	  }
+};
+
+//===========================================================================
+
+class Point : virtual public Object
+{
+	public:
+	  using scalar_type = long double;
+
+	  virtual std::size_t dim() const = 0;
+};
+
+//===========================================================================
+
+template <std::size_t D=2>
+class PointND : virtual public Point
+{
+	// create aliases
+	public:
+	  using point_type = std::array<scalar_type,D>;
+	  using const_iterator = typename point_type::const_iterator;
+
+	// Default constructor fills array with 0's
+	  PointND() {
+		  pt_.fill(0);
+	  }
+
+		// Constructor to copy a list to pt_
+	  PointND(std::initializer_list<scalar_type> list) {
+
+		  // list has to be the same size as the argument passed
+		  if (list.size() != D)
+			  throw (std::invalid_argument("Invalid Argument"));
+
+		  // copy [ list.begin(), list.end() ) to pt_
+		  std::copy(std::begin(list), std::end(list), begin());
+	  }
+
+	// Copy constructor
+	  PointND(PointND const& p) {
+	    // copy [ p.pt_.begin(), p.pt_.end() ) to pt_
+		  std::copy(std::begin(p.pt_), std::end(p.pt_), begin());
+	  }
+
+		// Copt assignment operator
+	  PointND& operator =(PointND const& p) {
+		 // make sure argument and this are not the same object
+		  if (this != &p)
+		  // copy [ p.pt_.begin(), p.pt_.end() ) to pt_
+			  std::copy(std::begin(p.pt_), std::end(p.pt_), begin());
+
+		  return *this;
+	  }
+	  
+	  // override
+	  std::unique_ptr<Object> clone()  {
+		  return clone_default_impl(*this);
+	  }
+
+	// return the dimension of pt_
+	  std::size_t dim() const {
+		  return D;
+	  }
+	  
+	  // overload the "-" operator
+	  scalar_type operator -(PointND<D> const& b) const {
+		  switch(D) {
+
+			// if the dimension is 1
+		  case 1:
+			  return pt_[0] - b.pt_[0];
+
+			// if the dimension is 2
+		  case 2: { 
+			  scalar_type xdiff = pt_[0] - b.pt_[0];
+			  scalar_type ydiff = pt_[1] - b.pt_[1];
+			  return std::sqrt(xdiff*xdiff + ydiff*ydiff);
+		  } 
+			// any other diemsion size is invalid
+		  default:
+			  throw std::runtime_error("Need same dimension!");
+		  }
+	  }
+
+		// aliases for begin() and end() of pt_
+	  typename point_type::iterator begin() { return pt_.begin(); }
+	  typename point_type::const_iterator begin() const { return pt_.begin(); }
+	  typename point_type::iterator end() { return pt_.end(); }
+	  typename point_type::const_iterator end() const { return pt_.end(); }
+
+	  // pt_ instance variable
+	private:
+	  point_type pt_;
+};
+
+//===========================================================================
+
+template <std::size_t D>
+std::ostream& operator <<(std::ostream& os, PointND<D> const& p) {
+	os << "( ";
+
+	// for loop through all of p's point values to output them
+	for (typename PointND<D>::point_type::const_iterator i = std::begin(p), 
+			iEnd = std::end(p); i != iEnd; ++i)
+		  os << *i << ' ';
+
+	os << ')';
+
+	return os;
+}
+
+std::ostream& operator <<(std::ostream& os, Object const& o) {
+
+  if (Point const *p = dynamic_cast<Point const*>(&o)) { 
+
+	  os << "[" << p->dim() << ": ";
+
+	// downcast p to PointND<1> const*
+	  PointND<1> const* p1 = dynamic_cast<PointND<1> const*>(p);   
+
+	// if the cast was successful output the value of *p1
+	  if (p1 != nullptr)	
+		  os << *p1;
+
+	// downcast p to PointND<2> const* 
+	  PointND<2> const* p2 = dynamic_cast<PointND<2> const*>(p);	
+
+	// if the cast was successful output the value of *p2
+	  if (p2 != nullptr)	
+		  os << *p2;
+
+	// if both casts were unsuccessful throw runtime_error exception
+	  if (p1 == nullptr && p2 == nullptr)
+		  throw std::runtime_error("Can't output Point");
+
+	  os << "]";
+
+  }
+
+  return os;
+}
+//===========================================================================
+
+#include <list>
+#include <iostream>
+
+int main()
+{
+  using namespace std;
+  using rObject = unique_ptr<Object>;
+  using rPoint = unique_ptr<Object>;
+  using rPoint2D = unique_ptr<Object>;
+
+  PointND<2> a{1.2L, 113.2L};
+  PointND<2> b{32.1L, 13.2L};
+  cout << (a - b) << endl;
+
+  list<rObject> l;
+  l.push_back(a.clone());
+  l.push_back(b.clone());
+
+  for_each(
+    l.begin(),
+    l.end(),
+    [](rObject const& o)
+    {
+      cout << *o << endl;
+    }
+  );
+}
