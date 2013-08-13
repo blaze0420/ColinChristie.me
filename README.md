@@ -1,1 +1,4 @@
-<p>Colin Christie's Portfolio Repo</p>
+ColinChristie.me
+================
+
+My Portfolio Website

@@ -4,7 +4,7 @@
             <div class="hero-unit">
             <p><h2>Web Development Project</h2></p>
                 <p><h4>
-                This is a project I helped create in a group of myself and 2 others which was a basic design to allow
+                This is a project I created in a group of myself and 2 others which was a basic design to allow
                 users to create accounts, log in and create photo albums so their friends can view them. 
                 My main responsibility was handling the uploading and resizing of photos then placing them into the proper place in the 
                 database. I was also responsible for being able to view the photos and therefore had to make proper database 
